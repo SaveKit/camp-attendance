@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  /* 1. ตั้งค่าสี (Colors) */
+  /* รูปแบบคือ --color-ชื่อสี: ค่าสี; */
+  /* Tailwind จะสร้าง class ให้เองอัตโนมัติ เช่น bg-camp-main, text-camp-dark */
+  
+  --color-camp-main: #16a34a;  /* สีเขียวหลัก */
+  --color-camp-light: #dcfce7; /* สีพื้นหลังอ่อนๆ */
+  --color-camp-dark: #14532d;  /* สีเขียวเข้มสำหรับตัวหนังสือ */
+
+  /* 2. ตั้งค่าฟอนต์ (Fonts) - แนะนำให้ใส่ไปด้วยเลยครับ */
+  /* --font-ชื่อฟอนต์: ชื่อใน Google Fonts, fallback; */
+  
+  --font-sans: "Prompt", ui-sans-serif, system-ui, sans-serif;
+}
