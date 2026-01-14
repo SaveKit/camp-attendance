@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# ... existing ignores
+.env
+.env.local
+.DS_Store
+node_modules/
