@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDashboardData } from "../hooks/useDashboardData";
 import Navbar from "./dashboard/Navbar";
 import StatusCard from "./dashboard/StatusCard";
@@ -7,7 +8,8 @@ import ScannerModal from "./scanner/ScannerModal";
 
 export default function Dashboard() {
   // ดึง Logic มาจาก Hook
-  const { user, stats, history, loading, logout , fetchDashboardData} = useDashboardData();
+  const { user, stats, history, loading, logout, fetchDashboardData } =
+    useDashboardData();
 
   const [isScannerOpen, setIsScannerOpen] = useState(false);
 
@@ -22,25 +24,25 @@ export default function Dashboard() {
           <StatusCard user={user} stats={stats} />
           <div className="hidden md:block">
             <ActionMenu user={user} onScan={() => setIsScannerOpen(true)} />{" "}
-            {/* ส่งฟังก์ชันเปิด */}
           </div>
         </div>
 
         <div className="space-y-6">
           <div className="md:hidden">
             <ActionMenu user={user} onScan={() => setIsScannerOpen(true)} />{" "}
-            {/* ส่งฟังก์ชันเปิด */}
           </div>
+
           <HistoryList history={history} loading={loading} />
         </div>
       </div>
 
       {/* --- Scanner Modal --- */}
+      {/* ส่ง fetchDashboardData ไปให้ ScannerModal เรียกใช้เมื่อสแกนสำเร็จ */}
       <ScannerModal
         isOpen={isScannerOpen}
         onClose={() => setIsScannerOpen(false)}
         userId={user.id}
-        onRefresh={() => window.location.reload()} // ง่ายสุดคือ Reload หรือจะสั่ง fetchDashboardData() ก็ได้
+        onRefresh={fetchDashboardData}
       />
     </div>
   );
