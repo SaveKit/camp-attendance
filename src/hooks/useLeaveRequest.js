@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "../lib/supabase";
 
 export function useLeaveRequest(userId) {
@@ -7,7 +7,7 @@ export function useLeaveRequest(userId) {
   const [loading, setLoading] = useState(true);
 
   // 1. ดึงกิจกรรมในอนาคตที่ยังไม่จบ และยังไม่ได้เช็คชื่อ
-  const fetchInfo = async () => {
+  const fetchInfo = useCallback(async () => {
     try {
       // A. ดึงกิจกรรมที่ end_time ยังมาไม่ถึง
       const { data: actData, error: actError } = await supabase
@@ -34,11 +34,11 @@ export function useLeaveRequest(userId) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]); // dependency คือ userId (ถ้า user เปลี่ยนให้โหลดใหม่)
 
   useEffect(() => {
     if (userId) fetchInfo();
-  }, [userId]);
+  }, [userId, fetchInfo]);
 
   // 2. ฟังก์ชันส่งใบลา
   const submitLeave = async (activityId, reason) => {

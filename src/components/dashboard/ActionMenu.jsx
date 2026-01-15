@@ -1,10 +1,16 @@
-import { Layers, BarChart3, ScanLine } from "lucide-react";
+import {
+  FileText,
+  BarChart3,
+  ScanLine,
+  Layers,
+  CalendarOff,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { checkIsAdmin } from "../../utils/auth";
 
 export default function ActionMenu({ user, onScan }) {
   const navigate = useNavigate();
-  const isAdmin =
-    user.is_admin || user.role === "ประธานค่าย" || user.role === "ทะเบียน";
+  const isAdmin = checkIsAdmin(user);
 
   return (
     <div className="space-y-4">

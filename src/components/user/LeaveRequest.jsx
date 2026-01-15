@@ -30,6 +30,16 @@ export default function LeaveRequest() {
     }
   };
 
+  if (loading && activities.length === 0 && history.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-camp-main animate-pulse font-bold">
+          กำลังโหลดข้อมูล...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
@@ -95,7 +105,7 @@ export default function LeaveRequest() {
 
             <button
               type="submit"
-              disabled={submitting || activities.length === 0}
+              disabled={submitting || loading || activities.length === 0}
               className="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition active:scale-[0.98] flex justify-center items-center gap-2 disabled:opacity-50"
             >
               <Send size={18} /> ส่งใบลา
