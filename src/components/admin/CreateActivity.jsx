@@ -1,20 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import QRCode from "react-qr-code";
-import { supabase } from "../../lib/supabase";
-import {
-  ArrowLeft,
-  MapPin,
-  Calendar,
-  Clock,
-  Save,
-  Download,
-} from "lucide-react";
+import { ArrowLeft, MapPin, Calendar, Clock, Save } from "lucide-react";
+import { useCreateActivity } from "../../hooks/useCreateActivity"; // Import Hook
 
 export default function CreateActivity() {
   const navigate = useNavigate();
+  const { locations, loading, createdActivity, createActivity, resetForm } =
+    useCreateActivity();
 
-  // State สำหรับ Form
   const [formData, setFormData] = useState({
     name: "",
     location_id: "",
@@ -22,64 +16,18 @@ export default function CreateActivity() {
     end_time: "",
   });
 
-  // State อื่นๆ
-  const [locations, setLocations] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [createdActivity, setCreatedActivity] = useState(null); // เก็บข้อมูลกิจกรรมที่เพิ่งสร้างเสร็จ
-
-  // 1. ดึงข้อมูลสถานที่มาใส่ Dropdown ตอนโหลดหน้า
-  useEffect(() => {
-    const fetchLocations = async () => {
-      const { data, error } = await supabase
-        .from("locations")
-        .select("id, name")
-        .order("name");
-
-      if (error) console.error("Error fetching locations:", error);
-      else setLocations(data || []);
-    };
-    fetchLocations();
-  }, []);
-
-  // 2. ฟังก์ชันบันทึกข้อมูล
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    try {
-      // Insert ลง Supabase
-      const { data, error } = await supabase
-        .from("activities")
-        .insert([
-          {
-            name: formData.name,
-            location_id: formData.location_id,
-            start_time: new Date(formData.start_time).toISOString(),
-            end_time: new Date(formData.end_time).toISOString(),
-            is_open: true,
-          },
-        ])
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      // สำเร็จ! เก็บข้อมูลไว้โชว์ QR Code
-      setCreatedActivity(data);
-    } catch (err) {
-      alert("เกิดข้อผิดพลาด: " + err.message);
-    } finally {
-      setLoading(false);
-    }
+    const result = await createActivity(formData);
+    if (!result.success) alert("เกิดข้อผิดพลาด: " + result.error);
   };
 
-  // 3. ฟังก์ชันรีเซ็ตเพื่อสร้างใหม่
   const handleReset = () => {
-    setCreatedActivity(null);
+    resetForm();
     setFormData({ name: "", location_id: "", start_time: "", end_time: "" });
   };
 
-  // --- UI ส่วนแสดง QR Code (เมื่อสร้างเสร็จ) ---
+  // --- UI ส่วนแสดง QR Code ---
   if (createdActivity) {
     return (
       <div className="min-h-screen bg-gray-50 p-4 flex flex-col items-center justify-center animate-fade-in">
@@ -96,15 +44,13 @@ export default function CreateActivity() {
 
           {/* QR Code Area */}
           <div className="bg-white p-4 rounded-xl border-2 border-dashed border-gray-300 inline-block mb-6">
-            <QRCode
-              value={String(createdActivity.id)} // QR Code คือ ID กิจกรรม
-              size={200}
-              level="H"
-            />
+            <QRCode value={createdActivity.secret_code} size={200} level="H" />
           </div>
 
           <p className="text-xs text-gray-400 mb-6">
-            ID: {createdActivity.id} | ให้ผู้เข้าร่วมสแกนเพื่อเช็คชื่อ
+            QR Code นี้ปลอดภัย (ไม่สามารถเดาได้)
+            <br />
+            Code: {createdActivity.secret_code.slice(0, 8)}...
           </p>
 
           <div className="space-y-3">
@@ -126,7 +72,7 @@ export default function CreateActivity() {
     );
   }
 
-  // --- UI ส่วนฟอร์มสร้างกิจกรรม ---
+  // --- UI Form สร้างกิจกรรม (ใช้ Logic จาก Hook) ---
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-md mx-auto">
@@ -146,7 +92,7 @@ export default function CreateActivity() {
         {/* Form Card */}
         <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* 1. ชื่อกิจกรรม */}
+            {/* Input ชื่อกิจกรรม */}
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1">
                 ชื่อกิจกรรม
@@ -163,7 +109,7 @@ export default function CreateActivity() {
               />
             </div>
 
-            {/* 2. สถานที่ (Dropdown) */}
+            {/* Dropdown สถานที่ */}
             <div>
               <label className="text-sm font-bold text-gray-700 mb-1 flex items-center gap-1">
                 <MapPin size={14} /> สถานที่

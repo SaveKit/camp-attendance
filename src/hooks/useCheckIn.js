@@ -9,12 +9,9 @@ export function useCheckIn() {
     async (qrContent, userLocation, userId) => {
       setProcessing(true);
       try {
-        // 1. ตรวจสอบว่า QR Code เป็นตัวเลข ID กิจกรรมหรือไม่
-        const activityId = parseInt(qrContent);
-        if (isNaN(activityId))
-          throw new Error("QR Code ไม่ถูกต้อง (ไม่ใช่รหัสกิจกรรม)");
-
-        // 2. ดึงข้อมูลกิจกรรมจาก Supabase (รวมถึงพิกัดสถานที่ location ด้วย)
+        // 1. ดึงข้อมูลกิจกรรมจาก Supabase (รวมถึงพิกัดสถานที่ location ด้วย)
+        // ใช้ qrContent (ที่เป็น UUID string) ไปค้นหาโดยตรง
+        // ค้นหากิจกรรมจาก secret_code แทน ID
         const { data: activity, error: actError } = await supabase
           .from("activities")
           .select(
@@ -23,13 +20,14 @@ export function useCheckIn() {
           locations ( lat, lng, radius_meters )
         `
           )
-          .eq("id", activityId)
+          .eq("secret_code", qrContent)
           .single();
 
-        if (actError || !activity) throw new Error("ไม่พบกิจกรรมนี้ในระบบ");
+        if (actError || !activity)
+          throw new Error("QR Code ไม่ถูกต้อง หรือไม่พบกิจกรรมนี้");
         if (!activity.is_open) throw new Error("กิจกรรมนี้ปิดการเช็คชื่อแล้ว");
 
-        // 3. ตรวจสอบ GPS (Geofencing)
+        // 2. ตรวจสอบ GPS (Geofencing)
         if (!activity.locations) throw new Error("กิจกรรมนี้ไม่ได้ระบุสถานที่");
 
         const distance = getDistanceInMeters(
@@ -48,7 +46,7 @@ export function useCheckIn() {
           );
         }
 
-        // 4. คำนวณสถานะ (มาทัน/สาย)
+        // 3. คำนวณสถานะ (มาทัน/สาย)
         const now = new Date();
         const startTime = new Date(activity.start_time);
         const diffMinutes = (now - startTime) / 1000 / 60;
@@ -64,11 +62,11 @@ export function useCheckIn() {
           note = "สายกว่า 15 นาที";
         }
 
-        // 5. บันทึกลงตาราง attendance
+        // 4. บันทึกลงตาราง attendance
         const { error: insertError } = await supabase
           .from("attendance")
           .insert({
-            activity_id: activityId,
+            activity_id: activity.id,
             user_id: userId,
             status: status,
             gps_distance: distance,
