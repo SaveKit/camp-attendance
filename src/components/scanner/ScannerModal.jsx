@@ -34,17 +34,18 @@ export default function ScannerModal({ isOpen, onClose, userId, onRefresh }) {
   useEffect(() => {
     if (!isOpen) return;
 
+    // ต้องเคลียร์ instance เก่า (ถ้ามี) ก่อนสร้างใหม่เพื่อความชัวร์
+    // (Html5Qrcode บางทีมีปัญห้าถ้า mount ซ้ำเร็วๆ)
     const html5QrCode = new Html5Qrcode("reader");
     const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
-    // เริ่มสแกน
     html5QrCode
       .start(
-        { facingMode: "environment" }, // กล้องหลัง
+        { facingMode: "environment" },
         config,
         async (decodedText) => {
           // --- เมื่อสแกนเจอ QR ---
-          await html5QrCode.pause(); // หยุดสแกนชั่วคราวกันเบิ้ล
+          await html5QrCode.pause();
 
           if (!gps) {
             alert("⚠️ กรุณารอสัญญาณ GPS ก่อนเช็คชื่อ");
@@ -52,32 +53,51 @@ export default function ScannerModal({ isOpen, onClose, userId, onRefresh }) {
             return;
           }
 
-          // ส่งข้อมูลไปเช็คชื่อ
+          // เรียกใช้ processCheckIn (ที่ตอนนี้ stable แล้วเพราะ useCallback)
           const result = await processCheckIn(decodedText, gps, userId);
 
           if (result.success) {
             alert("🎉 " + result.message);
-            onRefresh(); // สั่ง Dashboard ให้โหลดข้อมูลใหม่
-            onClose(); // ปิดหน้าจอ
+
+            // หยุดกล้องและเคลียร์ก่อนปิด Modal
+            await html5QrCode.stop();
+            html5QrCode.clear();
+
+            onRefresh();
+            onClose();
           } else {
             alert("❌ " + result.message);
-            html5QrCode.resume(); // สแกนต่อ (ถ้าผิดพลาด)
+            html5QrCode.resume();
           }
         },
-        (errorMessage) => {
-          // สแกนไม่เจอ (ไม่ต้องทำอะไร Log เยอะไปเดี๋ยวรก)
+        (_) => {
+          // แก้ Error no-unused-vars โดยใช้ underscore (_) หรือลบ parameter ทิ้ง
+          // สแกนไม่เจอ (Scan failure) ไม่ต้องทำอะไร
         }
       )
-      .catch((err) => console.error("Camera Error", err));
+      .catch((err) => {
+        // ดัก Error ตอน start กล้อง (เช่น user ไม่อนุญาต)
+        console.error("Camera Start Error", err);
+        setGpsError("ไม่สามารถเปิดกล้องได้ (กรุณาอนุญาตสิทธิ์)");
+      });
 
-    // Cleanup เมื่อปิด Modal
+    // Cleanup
     return () => {
-      html5QrCode
-        .stop()
-        .then(() => html5QrCode.clear())
-        .catch(console.error);
+      // เช็ค state ของ scanner ก่อน stop เพื่อกัน error
+      if (html5QrCode.isScanning) {
+        html5QrCode
+          .stop()
+          .then(() => html5QrCode.clear())
+          .catch(console.error);
+      } else {
+        html5QrCode.clear();
+      }
     };
-  }, [isOpen, gps, userId]); // Re-run ถ้า GPS มาแล้ว
+
+    // ✅ เพิ่ม Dependencies ครบตามที่ ESLint ต้องการ
+    // gps ไม่ต้องใส่ เพราะเราอ่านค่า gps ล่าสุดใน scope ของ effect อยู่แล้ว (หรือถ้าใส่ก็ไม่พัง)
+    // แต่ userId, processCheckIn, onClose, onRefresh ต้องใส่
+  }, [isOpen, userId, processCheckIn, onClose, onRefresh, gps]);
 
   if (!isOpen) return null;
 
