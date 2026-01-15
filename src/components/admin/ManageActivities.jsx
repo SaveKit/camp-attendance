@@ -52,12 +52,20 @@ export default function ManageActivities() {
         {/* Activity List */}
         <div className="space-y-3">
           {loading ? (
-            // Skeleton Loading
-            [1, 2, 3].map((i) => (
+            [1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                className="bg-white h-24 rounded-xl animate-pulse"
-              ></div>
+                className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center animate-pulse"
+              >
+                <div className="flex-1 space-y-3">
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                  <div className="space-y-1">
+                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-1/3"></div>
+                  </div>
+                </div>
+                <div className="w-12 h-12 bg-gray-200 rounded-xl ml-4"></div>
+              </div>
             ))
           ) : error ? (
             <div className="text-center text-red-500 py-4">{error}</div>

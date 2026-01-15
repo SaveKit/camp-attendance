@@ -1,25 +1,12 @@
 import { QrCode, MapPin, Calendar, Clock } from "lucide-react";
+import { formatDate, formatTime } from "../../utils/date";
 
 export default function ActivityCard({ activity, onShowQR }) {
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("th-TH", { day: "numeric", month: "short" });
-  };
-
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString("th-TH", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const isOpen = activity.is_open; // หรือจะเช็คเวลา end_time ก็ได้ตาม logic ที่คุยกัน
+  const isOpen = activity.is_open; // เช็คเวลา end_time ก็ได้ตาม logic ที่คุยกัน
 
   return (
     <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center hover:shadow-md transition">
       <div className="flex-1 min-w-0">
-        {" "}
         {/* min-w-0 ช่วยให้ text-truncate ทำงาน */}
         <div className="flex items-center gap-2 mb-1">
           <h3 className="font-bold text-gray-800 truncate">{activity.name}</h3>
