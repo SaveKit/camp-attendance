@@ -1,6 +1,6 @@
 import { FileText, BarChart3, ScanLine } from "lucide-react";
 
-export default function ActionMenu({ user }) {
+export default function ActionMenu({ user, onScan }) {
   const isAdmin =
     user.is_admin || user.role === "ประธานค่าย" || user.role === "ทะเบียน";
 
@@ -39,7 +39,7 @@ export default function ActionMenu({ user }) {
       {/* User Section */}
       <div>
         <button
-          onClick={() => alert("ระบบสแกนกำลังมาใน commit ถัดไป!")}
+          onClick={onScan}
           className="w-full bg-white p-4 rounded-2xl shadow-md border-l-4 border-blue-500 flex items-center justify-between hover:bg-blue-50 transition active:scale-[0.98] group"
         >
           <div className="flex items-center gap-4">
