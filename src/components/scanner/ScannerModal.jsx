@@ -13,7 +13,9 @@ export default function ScannerModal({ isOpen, onClose, userId, onRefresh }) {
     if (!isOpen) return;
 
     if (!navigator.geolocation) {
-      setGpsError("เบราว์เซอร์ไม่รองรับ GPS");
+      // FIX: ใช้ setTimeout เพื่อแก้ Error "set-state-in-effect"
+      // เป็นการบอก React ว่าให้ทำสิ่งนี้หลังจาก Render เสร็จแล้ว (Asynchronous)
+      setTimeout(() => setGpsError("เบราว์เซอร์ไม่รองรับ GPS"), 0);
       return;
     }
 
@@ -69,10 +71,6 @@ export default function ScannerModal({ isOpen, onClose, userId, onRefresh }) {
             alert("❌ " + result.message);
             html5QrCode.resume();
           }
-        },
-        (_) => {
-          // แก้ Error no-unused-vars โดยใช้ underscore (_) หรือลบ parameter ทิ้ง
-          // สแกนไม่เจอ (Scan failure) ไม่ต้องทำอะไร
         }
       )
       .catch((err) => {
