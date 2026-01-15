@@ -5,8 +5,7 @@ import { useCreateActivity } from "../../hooks/useCreateActivity"; // Import Hoo
 
 export default function CreateActivity() {
   const navigate = useNavigate();
-  const { locations, loading, createdActivity, createActivity, resetForm } =
-    useCreateActivity();
+  const { locations, loading, createActivity } = useCreateActivity();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -25,11 +24,6 @@ export default function CreateActivity() {
     } else {
       alert("เกิดข้อผิดพลาด: " + result.error);
     }
-  };
-
-  const handleReset = () => {
-    resetForm();
-    setFormData({ name: "", location_id: "", start_time: "", end_time: "" });
   };
 
   // --- UI Form สร้างกิจกรรม (ใช้ Logic จาก Hook) ---
