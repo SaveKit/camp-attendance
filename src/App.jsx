@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import CreateActivity from "./components/admin/CreateActivity";
 import ManageActivities from "./components/admin/ManageActivities";
+import LeaveRequest from "./components/user/LeaveRequest";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/admin/manage-activities" element={<ManageActivities />} />
         <Route path="/admin/create-activity" element={<CreateActivity />} />
+        <Route path="/leave-request" element={<LeaveRequest />} />
         {/* Redirect หน้าแรกไป Login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>

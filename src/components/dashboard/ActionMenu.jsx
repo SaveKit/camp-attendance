@@ -7,7 +7,7 @@ export default function ActionMenu({ user, onScan }) {
     user.is_admin || user.role === "ประธานค่าย" || user.role === "ทะเบียน";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Admin Section */}
       {isAdmin && (
         <div className="animate-fade-in">
@@ -43,7 +43,8 @@ export default function ActionMenu({ user, onScan }) {
       )}
 
       {/* User Section */}
-      <div>
+      <div className="grid grid-cols-1 gap-3">
+        {/* ปุ่มสแกน */}
         <button
           onClick={onScan}
           className="w-full bg-white p-4 rounded-2xl shadow-md border-l-4 border-blue-500 flex items-center justify-between hover:bg-blue-50 transition active:scale-[0.98] group"
@@ -57,6 +58,26 @@ export default function ActionMenu({ user, onScan }) {
                 สแกนเช็คชื่อ
               </div>
               <div className="text-xs text-gray-500">Check-in กิจกรรม</div>
+            </div>
+          </div>
+        </button>
+
+        {/* ปุ่มแจ้งลา */}
+        <button
+          onClick={() => navigate("/leave-request")}
+          className="w-full bg-white p-4 rounded-2xl shadow-md border-l-4 border-orange-400 flex items-center justify-between hover:bg-orange-50 transition active:scale-[0.98] group"
+        >
+          <div className="flex items-center gap-4">
+            <div className="bg-orange-100 p-3 rounded-full text-orange-500 group-hover:rotate-12 transition duration-300">
+              <CalendarOff size={24} />
+            </div>
+            <div className="text-left">
+              <div className="font-bold text-lg text-gray-800">
+                แจ้งลาล่วงหน้า
+              </div>
+              <div className="text-xs text-gray-500">
+                สำหรับผู้ที่ไม่สะดวกเข้าร่วม
+              </div>
             </div>
           </div>
         </button>
