@@ -58,7 +58,7 @@ export default function Login() {
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 border-t-4 border-camp-main z-10">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-camp-main mb-2">
-            ค่ายเยาวชนต้นกล้า 19
+            ค่ายเยาวชนต้นกล้า 18
           </h1>
           <p className="text-gray-500 text-sm">ระบบเช็คชื่อและจัดการทีมงาน</p>
         </div>

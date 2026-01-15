@@ -37,7 +37,11 @@ export default function ActionMenu({ user, onScan }) {
                 สร้าง / ดูประวัติ / QR Code
               </div>
             </button>
-            <button className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:border-camp-main hover:shadow-md transition text-left group">
+            {/* ปุ่มรายงานผล */}
+            <button
+              onClick={() => navigate("/admin/reports")}
+              className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:border-camp-main hover:shadow-md transition text-left group"
+            >
               <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-500 flex items-center justify-center mb-2 group-hover:scale-110 transition">
                 <BarChart3 size={20} />
               </div>

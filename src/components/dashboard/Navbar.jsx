@@ -8,7 +8,9 @@ export default function Navbar({ user, onLogout }) {
         {" "}
         {/* ปรับ max-w ให้กว้างขึ้น */}
         <div className="flex items-center justify-between h-16">
-          <span className="font-bold text-lg tracking-wide">Tonkla 19</span>
+          <span className="font-bold text-lg tracking-wide">
+            ค่ายเยาวชนต้นกล้า 18
+          </span>
 
           <div className="flex items-center gap-3">
             <div className="text-right leading-tight">
