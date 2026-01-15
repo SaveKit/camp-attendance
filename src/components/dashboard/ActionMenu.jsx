@@ -1,4 +1,4 @@
-import { FileText, BarChart3, ScanLine } from "lucide-react";
+import { Layers, BarChart3, ScanLine } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function ActionMenu({ user, onScan }) {
@@ -18,17 +18,17 @@ export default function ActionMenu({ user, onScan }) {
           <div className="grid grid-cols-2 gap-3">
             {/* ปุ่มสร้างกิจกรรม */}
             <button
-              onClick={() => navigate("/admin/create-activity")}
+              onClick={() => navigate("/admin/manage-activities")}
               className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:border-camp-main hover:shadow-md transition text-left group"
             >
-              <div className="w-10 h-10 rounded-lg bg-red-50 text-red-500 flex items-center justify-center mb-2 group-hover:scale-110 transition">
-                <FileText size={20} />
+              <div className="w-10 h-10 rounded-lg bg-orange-50 text-orange-500 flex items-center justify-center mb-2 group-hover:scale-110 transition">
+                <Layers size={20} />
               </div>
               <div className="font-bold text-gray-800 text-sm">
-                สร้างกิจกรรม
+                จัดการกิจกรรม
               </div>
               <div className="text-[10px] text-gray-400">
-                สร้าง QR Code ใหม่
+                สร้าง / ดูประวัติ / QR Code
               </div>
             </button>
             <button className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:border-camp-main hover:shadow-md transition text-left group">

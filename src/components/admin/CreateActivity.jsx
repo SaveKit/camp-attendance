@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import QRCode from "react-qr-code";
 import { ArrowLeft, MapPin, Calendar, Clock, Save } from "lucide-react";
 import { useCreateActivity } from "../../hooks/useCreateActivity"; // Import Hook
 
@@ -19,58 +18,19 @@ export default function CreateActivity() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await createActivity(formData);
-    if (!result.success) alert("เกิดข้อผิดพลาด: " + result.error);
+
+    if (result.success) {
+      alert("🎉 สร้างกิจกรรมเรียบร้อย!");
+      navigate("/admin/manage-activities");
+    } else {
+      alert("เกิดข้อผิดพลาด: " + result.error);
+    }
   };
 
   const handleReset = () => {
     resetForm();
     setFormData({ name: "", location_id: "", start_time: "", end_time: "" });
   };
-
-  // --- UI ส่วนแสดง QR Code ---
-  if (createdActivity) {
-    return (
-      <div className="min-h-screen bg-gray-50 p-4 flex flex-col items-center justify-center animate-fade-in">
-        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md text-center border-t-4 border-camp-main">
-          <div className="mb-4">
-            <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-2">
-              <Save size={32} />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-800">
-              สร้างกิจกรรมสำเร็จ!
-            </h2>
-            <p className="text-gray-500">{createdActivity.name}</p>
-          </div>
-
-          {/* QR Code Area */}
-          <div className="bg-white p-4 rounded-xl border-2 border-dashed border-gray-300 inline-block mb-6">
-            <QRCode value={createdActivity.secret_code} size={200} level="H" />
-          </div>
-
-          <p className="text-xs text-gray-400 mb-6">
-            QR Code นี้ปลอดภัย (ไม่สามารถเดาได้)
-            <br />
-            Code: {createdActivity.secret_code.slice(0, 8)}...
-          </p>
-
-          <div className="space-y-3">
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="w-full py-3 rounded-xl bg-gray-100 text-gray-700 font-bold hover:bg-gray-200 transition"
-            >
-              กลับหน้าหลัก
-            </button>
-            <button
-              onClick={handleReset}
-              className="w-full py-3 rounded-xl border border-camp-main text-camp-main font-bold hover:bg-green-50 transition"
-            >
-              สร้างกิจกรรมอื่นต่อ
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   // --- UI Form สร้างกิจกรรม (ใช้ Logic จาก Hook) ---
   return (
@@ -79,7 +39,7 @@ export default function CreateActivity() {
         {/* Header */}
         <div className="flex items-center mb-6">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/admin/manage-activities")}
             className="p-2 -ml-2 hover:bg-white rounded-full transition text-gray-600"
           >
             <ArrowLeft size={24} />
