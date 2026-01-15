@@ -1,6 +1,8 @@
 import { FileText, BarChart3, ScanLine } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function ActionMenu({ user, onScan }) {
+  const navigate = useNavigate();
   const isAdmin =
     user.is_admin || user.role === "ประธานค่าย" || user.role === "ทะเบียน";
 
@@ -14,7 +16,11 @@ export default function ActionMenu({ user, onScan }) {
             เมนูผู้ดูแลระบบ
           </h3>
           <div className="grid grid-cols-2 gap-3">
-            <button className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:border-camp-main hover:shadow-md transition text-left group">
+            {/* ปุ่มสร้างกิจกรรม */}
+            <button
+              onClick={() => navigate("/admin/create-activity")}
+              className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:border-camp-main hover:shadow-md transition text-left group"
+            >
               <div className="w-10 h-10 rounded-lg bg-red-50 text-red-500 flex items-center justify-center mb-2 group-hover:scale-110 transition">
                 <FileText size={20} />
               </div>
